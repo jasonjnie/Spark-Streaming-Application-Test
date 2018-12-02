@@ -37,7 +37,9 @@ import sys
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
 
-
+'''
+rdd = (string, sentiment_score)
+'''
 def print_happiest_words(rdd):
     top_list = rdd.take(5)
     print("Happiest topics in the last 5 seconds (%d total):" % rdd.count())

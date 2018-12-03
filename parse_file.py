@@ -14,6 +14,7 @@ if __name__ == "__main__":
                 skip_line = False
                 for line in lines:
                     line = line.rstrip("\n")
+                    # print(line)
                     if line.split(' ')[0] == "review/helpfulness:":
                         if float(line.split(' ')[-1].split('/')[1]) == 0:
                             skip_line = True
@@ -21,8 +22,7 @@ if __name__ == "__main__":
                         else:
                             helpfulness = float(line.split(' ')[1].split('/')[0]) / float(line.split(' ')[1].split('/')[1])
                             print("helpfulness =",helpfulness)
-                            f2.write(str(helpfulness))
-                            f2.write(" ")
+                            cur_helpfulness = helpfulness
                     elif line.split(' ')[0] == "review/score:":
                         if skip_line:
                             skip_line = False
@@ -30,5 +30,6 @@ if __name__ == "__main__":
                         else:
                             score = float(line.split(' ')[1])
                             print(("score =", score))
-                            f2.write(str(score))
-                            f2.write("\n")
+                            line_out = "{} {}\n".format(score, helpfulness)
+                            # print("line_out:", line_out)
+                            f2.write(line_out)

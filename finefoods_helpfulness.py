@@ -41,27 +41,18 @@ if __name__ == "__main__":
     sc.setLogLevel("WARN")
     ssc = StreamingContext(sc, 1)
 
-    # lines = ssc.textFileStream(sys.argv[1])
-    lines = ssc.sparkContext.textFile("./../../../home/nie9/data/finefoods.txt")\
-            .filter(lambda line: True if line.split("\n")[0] == "review/score:" else False)
-    print(lines.take(10))
-    # def getFileds(rdd):
-    #     rdd.filter(lambda line: line)
-    #
-    # lines.foreachRDD(getFileds)
+    lines = ssc.textFileStream(sys.argv[1])
+    # lines = ssc.sparkContext.textFile("./../../../home/nie9/Spark-Streaming-Application-Test/data/finefoods.txt") \
+    #         .map(lambda line: tuple(line.split(" "))).toDF()
+    # lines.pprint(999999)
+    # .filter(lambda line: True if line.split("\n")[0] == "review/score:" else False)
+    # print(lines.take(10))
+
+    counts = lines.map(lambda line: tuple(line.split(" ")[1], line.split(" "[0]))) \
+                  .reduceByKey(lambda a, b: a+b)
 
 
-
-    # lines = ssc.filter(lambda line: line.split(" ")[0] == "review/score:")
-
-
-
-    # counts = lines.flatMap(lambda line: line.split(" "))\
-    #               .map(lambda x: (x, 1))\
-    #               .reduceByKey(lambda a, b: a+b)
-    #
-    #
-    # counts.pprint(999999)
+    counts.pprint(999999)
 
     ssc.start()
     ssc.awaitTermination()

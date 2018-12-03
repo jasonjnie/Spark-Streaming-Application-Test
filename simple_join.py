@@ -16,14 +16,11 @@
 #
 
 """
- Counts words in new text files created in the given directory
- Usage: hdfs_wordcount.py <directory>
-   <directory> is the directory that Spark Streaming will use to find and read new text files.
-
- To run this on your local machine on directory `localdir`, run this example
-    $ bin/spark-submit examples/src/main/python/streaming/hdfs_wordcount.py localdir
-
- Then create a text file in `localdir` and the words in the file will get counted.
+ Usage: ./bin/spark-submit
+ --master spark://172.22.158.121:7077
+ --deploy-mode client
+ ./../../../home/nie9/Spark-Streaming-Application-Test/simple_join.py
+ ./../../../home/nie9/Spark-Streaming-Application-Test/data/test/
 """
 from __future__ import print_function
 
@@ -42,12 +39,18 @@ if __name__ == "__main__":
     ssc = StreamingContext(sc, 1)
 
     lines1 = ssc.textFileStream(sys.argv[1])
-    lines2 = ssc.textFileStream(sys.argv[2])
+    lines2 = ssc.textFileStream(sys.argv[1])
 
-    counts = lines1.transform(lambda line: line.join(lines2).filter())
+    lines1 = lines1.map(lambda x: tuple((x.split(" ")[0], x)))
+    lines2 = lines2.map(lambda x: tuple((x.split(" ")[0], x)))
 
+    joined_lines = lines1.join(lines2) \
+                    .filter(lambda x: x[1][0] != x[1][1] and x[1][0].split(" ")[1] != "male" and x[1][0].split(" ")[1] != "female") \
+                    .map(lambda x: tuple((int(x[0]), x[1][0] + " " + x[1][1]))) \
+                    .transform(lambda rdd: rdd.sortByKey(True)) \
+                    .map(lambda x: x[1])
 
-    counts.pprint(999999)
+    joined_lines.pprint(999999)
 
     ssc.start()
     ssc.awaitTermination()

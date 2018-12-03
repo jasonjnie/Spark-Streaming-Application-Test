@@ -48,8 +48,10 @@ if __name__ == "__main__":
     # .filter(lambda line: True if line.split("\n")[0] == "review/score:" else False)
     # print(lines.take(10))
 
-    counts = lines.map(lambda line: tuple(line.split(" ")[1], line.split(" "[0]))) \
-                  .reduceByKey(lambda a, b: a+b)
+    counts = lines.map(lambda line: tuple(line.split(" "))) \
+                  .reduceByKey(lambda a, b: float(a)+float(b)) \
+                  .transform(lambda rdd: rdd.sortByKey(True))
+
 
 
     counts.pprint(999999)

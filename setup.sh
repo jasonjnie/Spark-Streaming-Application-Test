@@ -5,5 +5,5 @@ USER="nie9"
 
 for i in `seq -f "%02g" 10 10`;
 do
-    scp -r ../Spark-Streaming-Application-Test/simple_join.py $USER@fa18-cs425-g36-$i.cs.illinois.edu:/home/$USER/Spark-Streaming-Application-Test/
+    scp -r ../Spark-Streaming-Application-Test/finefoods_wordcount.py $USER@fa18-cs425-g36-$i.cs.illinois.edu:/home/$USER/Spark-Streaming-Application-Test/
 done

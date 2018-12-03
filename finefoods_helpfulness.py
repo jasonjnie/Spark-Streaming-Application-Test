@@ -36,8 +36,9 @@ if __name__ == "__main__":
 
     lines = ssc.textFileStream(sys.argv[1])
 
-    counts = lines.map(lambda line: tuple(line.split(" "))) \
-                  .reduceByKey(lambda a, b: float(a)+float(b)) \
+    counts = lines.map(lambda line: tuple((line.split(" ")[0], tuple((line.split(" ")[1], 1))))) \
+                  .reduceByKey(lambda a, b: tuple((float(a[0]) + float(b[0]), int(a[1]) + int(b[1])))) \
+                  .map(lambda x: tuple((float(x[0]), x[1][0] / x[1][1]))) \
                   .transform(lambda rdd: rdd.sortByKey(True))
 
     counts.pprint(999999)
